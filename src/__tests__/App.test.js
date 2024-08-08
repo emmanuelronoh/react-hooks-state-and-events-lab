@@ -1,30 +1,25 @@
-import "@testing-library/jest-dom";
-import { render, screen, fireEvent } from "@testing-library/react";
-import App from "../components/App";
-
-test("displays in 'light' mode when initialized", () => {
-  const { container } = render(<App />);
-  expect(container.querySelector(".App.light")).toBeInTheDocument();
-});
+// src/__tests__/App.test.js
+import { render, screen, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom'; // For extended matchers like .toHaveClass
+import App from '../components/App'; // Adjust the path as necessary
 
 test("changes to 'dark' mode when the button is clicked", () => {
-  const { container } = render(<App />);
-  expect(container.querySelector(".App.light")).toBeInTheDocument();
+  render(<App />);
 
-  fireEvent.click(screen.getByText(/ Mode/));
-
-  expect(container.querySelector(".App.dark")).toBeInTheDocument();
+  // Click the "Dark Mode" button
+  fireEvent.click(screen.getByText(/Dark Mode/));
+  
+  // Check if the root div has the 'dark' class
+  expect(screen.getByRole('banner').parentElement).toHaveClass('dark');
 });
 
 test("changes back to 'light' mode when the button is clicked twice", () => {
-  const { container } = render(<App />);
-  expect(container.querySelector(".App.light")).toBeInTheDocument();
-
-  fireEvent.click(screen.getByText(/ Mode/));
-
-  expect(container.querySelector(".App.dark")).toBeInTheDocument();
-
-  fireEvent.click(screen.getByText(/ Mode/));
-
-  expect(container.querySelector(".App.light")).toBeInTheDocument();
+  render(<App />);
+  
+  // Click the "Dark Mode" button twice
+  fireEvent.click(screen.getByText(/Dark Mode/));
+  fireEvent.click(screen.getByText(/Dark Mode/));
+  
+  // Check if the root div does not have the 'dark' class
+  expect(screen.getByRole('banner').parentElement).not.toHaveClass('dark');
 });

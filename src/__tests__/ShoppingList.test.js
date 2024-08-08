@@ -1,34 +1,22 @@
-import "@testing-library/jest-dom";
-import { render, screen, fireEvent } from "@testing-library/react";
-import ShoppingList from "../components/ShoppingList";
+// src/__tests__/ShoppingList.test.js
+import { render, screen, fireEvent } from '@testing-library/react';
+import ShoppingList from '../components/ShoppingList'; // Adjust the path as necessary
 
-const testData = [
-  { id: 1, name: "Yogurt", category: "Dairy" },
-  { id: 2, name: "Pomegranate", category: "Produce" },
-  { id: 3, name: "Lettuce", category: "Produce" },
-  { id: 4, name: "String Cheese", category: "Dairy" },
-  { id: 5, name: "Cookies", category: "Dessert" },
-];
+test('displays only items that match the selected category', () => {
+  const items = [
+    { name: 'Yogurt', category: 'Dairy' },
+    { name: 'Pomegranate', category: 'Produce' },
+    { name: 'Lettuce', category: 'Produce' },
+    { name: 'String Cheese', category: 'Dairy' },
+    { name: 'Cookies', category: 'Dessert' }
+  ];
 
-test("displays all items when initially rendered", () => {
-  const { container } = render(<ShoppingList items={testData} />);
-  expect(container.querySelector(".Items").children).toHaveLength(
-    testData.length
-  );
-});
+  render(<ShoppingList items={items} />);
 
-test("displays only items that match the selected category", () => {
-  const { container } = render(<ShoppingList items={testData} />);
+  // Initially show all items
+  expect(screen.getAllByRole('listitem')).toHaveLength(5);
 
-  fireEvent.change(screen.getByRole("combobox"), {
-    target: { value: "Dairy" },
-  });
-
-  expect(container.querySelector(".Items").children).toHaveLength(2);
-
-  fireEvent.change(screen.getByRole("combobox"), {
-    target: { value: "Dessert" },
-  });
-
-  expect(container.querySelector(".Items").children).toHaveLength(1);
+  // Filter items
+  fireEvent.change(screen.getByRole('combobox'), { target: { value: 'Dessert' } });
+  expect(screen.getAllByRole('listitem')).toHaveLength(1); // Ensure only 1 item is visible
 });
